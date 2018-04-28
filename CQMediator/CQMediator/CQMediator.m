@@ -16,6 +16,12 @@ Stuff; \
 _Pragma("clang diagnostic pop") \
 } while (0)
 
+#ifdef DEBUG
+#define CQLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#define CQLog(...)
+#endif
+
 
 @interface CQMediator ()
 @property (nonatomic, strong) NSMutableDictionary *targetCache;
@@ -53,7 +59,7 @@ _Pragma("clang diagnostic pop") \
     SEL action = NSSelectorFromString(actionString);
     
     if (target == nil) {
-        NSLog(@"找不到控制器");
+        CQLog(@"找不到控制器");
         if ([_delegate respondsToSelector:@selector(mediatorWithTarget:)]) {
             [_delegate mediatorWithTarget:self];
         }
@@ -79,7 +85,7 @@ _Pragma("clang diagnostic pop") \
             }
         } else {
             // 这里也是处理无响应请求的地方，在notFound都没有的时候，这个demo是直接return了。实际开发过程中，可以用前面提到的固定的target顶上的。
-            NSLog(@"无法解析参数或者找不到方法");
+            CQLog(@"无法解析参数或者找不到方法");
             if ([_delegate respondsToSelector:@selector(mediatorWithParams:)]) {
                 [_delegate mediatorWithParams:self];
             }
